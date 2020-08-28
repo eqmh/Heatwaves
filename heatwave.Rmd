@@ -5,6 +5,10 @@ output: html_notebook
 
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
 
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+Basic detection and visualization of events
+
 ```{r}
 library(dplyr)
 library(ggplot2)
@@ -39,7 +43,12 @@ ggplot(mhw$event, aes(x = date_start, y = intensity_max)) +
   labs(y = expression(paste("Max. intensity [", degree, "C]")), x = NULL)
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+Calculating and Visualising Exceedances
+
+```{r}
+exc_25 <- exceedance(sst_PATAG, threshold = 25)
+
+```
 
 
 
