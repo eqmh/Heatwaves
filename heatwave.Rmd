@@ -34,6 +34,8 @@ mhw$event %>%
 event_line(mhw, spread = 180, metric = "intensity_max",
            start_date = "2002-07-27", end_date = "2019-12-31")
 
+event_line(mhw, spread = 180, start_date = "2002-07-27", end_date = "2019-12-31", category = TRUE)
+
 lolli_plot(mhw, metric = "intensity_max")
 
 ggplot(mhw$event, aes(x = date_start, y = intensity_max)) +
@@ -46,8 +48,29 @@ ggplot(mhw$event, aes(x = date_start, y = intensity_max)) +
 Calculating and Visualising Exceedances
 
 ```{r}
-exc_25 <- exceedance(sst_PATAG, threshold = 25)
+# Calculate exceedence
+exc_val <- exceedance(sst_PATAG, threshold = 18)
 
+# Look at a few metrics
+exc_val$exceedance %>%
+  ungroup() %>%
+  select(exceedance_no, duration, date_start, date_peak, intensity_mean, intensity_max, intensity_cumulative) %>%
+  dplyr::arrange(-intensity_cumulative) %>%
+  head(5)
+
+exc_val_thresh <- exc_val$threshold %>%
+  slice(5300:7000)
+
+ggplot(data = exc_val_thresh, aes(x = t)) +
+  geom_flame(aes(y = temp, y2 = thresh, fill = "all"), show.legend = F) +
+  geom_line(aes(y = temp, colour = "temp")) +
+  geom_line(aes(y = thresh, colour = "thresh"), size = 1.0) +
+  scale_colour_manual(name = "Line Colour",
+                      values = c("temp" = "black", "thresh" =  "forestgreen")) +
+  scale_fill_manual(name = "Event Colour", values = c("all" = "salmon")) +
+  guides(colour = guide_legend(override.aes = list(fill = NA))) +
+  scale_x_date(date_labels = "%b %Y") +
+  labs(y = expression(paste("Temperature [", degree, "C]")), x = NULL)
 ```
 
 
